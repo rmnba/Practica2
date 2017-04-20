@@ -10,6 +10,7 @@ import modelo.cromosomas.funcion2.CromosomaF2;
 import modelo.cromosomas.funcion3.CromosomaF3;
 import modelo.cromosomas.funcion4.CromosomaF4;
 import modelo.cromosomas.funcion4real.CromosomaF4real;
+import modelo.cromosomas.funcion5.CromosomaF5;
 import modelo.genes.GenReal;
 
 public class AGS 
@@ -181,10 +182,15 @@ public class AGS
 			hijo1 = FactoriaCromosomas.getInstancia().creaCromosomaF4real();
 			hijo2 = FactoriaCromosomas.getInstancia().creaCromosomaF4real();
 		}
-		else
+		else if (pob.getIndividuos()[0] instanceof CromosomaF5)
 		{
 			hijo1 = FactoriaCromosomas.getInstancia().creaCromosomaF5();
 			hijo2 = FactoriaCromosomas.getInstancia().creaCromosomaF5();
+		}
+		else
+		{
+			hijo1 = FactoriaCromosomas.getInstancia().creaCromosomaHospitales();
+			hijo2 = FactoriaCromosomas.getInstancia().creaCromosomaHospitales();
 		}
 		
 		for(int i=0; i < this.pob.getTam(); ++i)
@@ -260,10 +266,15 @@ public class AGS
 				aux3 = FactoriaCromosomas.getInstancia().creaCromosomaF4real();
 				aux4 = FactoriaCromosomas.getInstancia().creaCromosomaF4real();
 			}
-			else
+			else  if (aux1 instanceof CromosomaF5)
 			{
 				aux3 = FactoriaCromosomas.getInstancia().creaCromosomaF5();
 				aux4 = FactoriaCromosomas.getInstancia().creaCromosomaF5();
+			}
+			else
+			{
+				aux3 = FactoriaCromosomas.getInstancia().creaCromosomaHospitales();
+				aux4 = FactoriaCromosomas.getInstancia().creaCromosomaHospitales();
 			}
 			
 			for(int i=0; i < nCortes; ++i)

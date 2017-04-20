@@ -7,6 +7,7 @@ import modelo.cromosomas.funcion3.CromosomaF3;
 import modelo.cromosomas.funcion4.CromosomaF4;
 import modelo.cromosomas.funcion4real.CromosomaF4real;
 import modelo.cromosomas.funcion5.CromosomaF5;
+import modelo.cromosomas.hospital.CromosomaHospitales;
 
 public class Poblacion 
 {
@@ -27,8 +28,10 @@ public class Poblacion
 			this.individuos = new CromosomaF4[tam];
 		else if (cromosoma instanceof CromosomaF4real)
 			this.individuos = new CromosomaF4real[tam];
-		else
+		else if (cromosoma instanceof CromosomaF5)
 			this.individuos = new CromosomaF5[tam];
+		else
+			this.individuos = new CromosomaHospitales[tam];
 	}
 
 	public void inicializa(Cromosoma cromosoma)
