@@ -7,6 +7,7 @@ import modelo.cromosomas.funcion3.CromosomaF3;
 import modelo.cromosomas.funcion4.CromosomaF4;
 import modelo.cromosomas.funcion4real.CromosomaF4real;
 import modelo.cromosomas.funcion5.CromosomaF5;
+import modelo.cromosomas.hospital.CromosomaHospitales;
 
 public abstract class FactoriaCromosomas 
 {
@@ -38,6 +39,8 @@ public abstract class FactoriaCromosomas
 	public abstract CromosomaF4real creaCromosomaF4real();
 	
 	public abstract CromosomaF5 creaCromosomaF5();
+	
+	public abstract CromosomaHospitales creaCromosomaHospitales();
 	
 	public abstract void setxMax(double[] xMax);
 	

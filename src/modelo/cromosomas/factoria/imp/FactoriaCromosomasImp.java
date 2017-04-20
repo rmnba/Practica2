@@ -7,6 +7,7 @@ import modelo.cromosomas.funcion3.CromosomaF3;
 import modelo.cromosomas.funcion4.CromosomaF4;
 import modelo.cromosomas.funcion4real.CromosomaF4real;
 import modelo.cromosomas.funcion5.CromosomaF5;
+import modelo.cromosomas.hospital.CromosomaHospitales;
 
 public class FactoriaCromosomasImp extends FactoriaCromosomas
 {
@@ -76,6 +77,17 @@ public class FactoriaCromosomasImp extends FactoriaCromosomas
 		
 		return crom;
 	}
+	
+	@Override
+	public CromosomaHospitales creaCromosomaHospitales() 
+	{
+		CromosomaHospitales crom = new CromosomaHospitales(this.tol);
+		crom.setSeed(this.seed);
+		for(int i = 0; i < nVar; ++i)
+			crom.aniadeGen(xMax[i], xMin[i]);
+		
+		return crom;
+	}
 
 	@Override
 	public void setxMax(double[] xMax) 
@@ -100,4 +112,5 @@ public class FactoriaCromosomasImp extends FactoriaCromosomas
 	{
 		this.nVar = nVar;
 	}
+
 }
