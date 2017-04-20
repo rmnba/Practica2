@@ -21,6 +21,7 @@ import org.math.plot.Plot2DPanel;
 
 import modelo.Cruce;
 import modelo.Funcion;
+import modelo.Mutacion;
 import modelo.Observador;
 import modelo.Poblacion;
 import modelo.Select;
@@ -41,6 +42,7 @@ public class Ventana extends JFrame implements Observador, ActionListener
 	private JComboBox<Funcion> cbFuncion; 
 	private JComboBox<Cruce> cbCruce;
 	private JComboBox<String> cbSeleccion;
+	private JComboBox<Mutacion> cbMutacion;
 	private JTextField tfTolerancia;
 	private JTextField tfPoblacion;
 	private JTextField tfGeneraciones;
@@ -55,9 +57,10 @@ public class Ventana extends JFrame implements Observador, ActionListener
 	private JButton reRun;
 	private JButton stop;
 	
-	private static Funcion[] funciones = {Funcion.FUNCION1, Funcion.FUNCION2,Funcion.FUNCION3,Funcion.FUNCION4, Funcion.FUNCION4R, Funcion.FUNCION5};
+	private static Funcion[] funciones = {Funcion.FUNCION1, Funcion.FUNCION2,Funcion.FUNCION3,Funcion.FUNCION4, Funcion.FUNCION4R, Funcion.FUNCION5, Funcion.HOSPITAL};
 	private static Cruce[] crucesB = {Cruce.MONOPUNTO, Cruce.MULTIPUNTO, Cruce.UNIFORME};
 	private static String[] selecciones = {"RULETA", "TORNEO DETERMINISTA", "TORNEO PROBABILISTA", "ESTOCASTICO"};
+	private static Mutacion[] mutaciones = {Mutacion.INVERSION, Mutacion.INTERCAMBIO, Mutacion.INSERCION, Mutacion.HEURISTICA};
 	
 	private Plot2DPanel plot;
 	private JTextArea taResultados;
@@ -69,10 +72,10 @@ public class Ventana extends JFrame implements Observador, ActionListener
 	
 	public Ventana()
 	{
-		this.c = new Controlador();;
+		this.c = new Controlador();
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
-		this.setTitle("Practica 1");
+		this.setTitle("Practica 2");
 		
 		cbFuncion = new JComboBox<Funcion>(funciones);
 		cbFuncion.setSelectedIndex(0);
@@ -81,6 +84,7 @@ public class Ventana extends JFrame implements Observador, ActionListener
 		cbCruce.setSelectedIndex(0);
 		cbSeleccion = new JComboBox<String>(selecciones);
 		cbSeleccion.setSelectedIndex(0);
+		cbMutacion = new JComboBox<Mutacion>(mutaciones);
 		
 		tfTolerancia = new JTextField("0.001", 6);
 		tfPoblacion = new JTextField("100", 6);

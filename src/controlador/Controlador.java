@@ -129,6 +129,17 @@ public class Controlador
 				this.cromosoma = FactoriaCromosomas.getInstancia().creaCromosomaF5();
 				maximizar = false;
 				break;
+			case HOSPITAL:
+				double[] xMaxHosp = new double[n];
+				double[] xMinHosp = new double[n];
+				FactoriaCromosomas.getInstancia().setxMax(xMaxHosp);
+				FactoriaCromosomas.getInstancia().setxMin(xMinHosp);
+				FactoriaCromosomas.getInstancia().setTol(tol);
+				FactoriaCromosomas.getInstancia().setnVar(n);
+				
+				this.cromosoma = FactoriaCromosomas.getInstancia().creaCromosomaHospitales();
+				maximizar = false;
+				break;
 			default:
 				break;
 		}
