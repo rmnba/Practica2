@@ -1,11 +1,14 @@
 package modelo.cromosomas.hospital;
 
+import modelo.Datos;
 import modelo.cromosomas.Cromosoma;
 import modelo.cromosomas.CromosomaEntero;
 import modelo.genes.GenEntero;
 
 public class CromosomaHospitales extends CromosomaEntero
 {
+	
+	private Datos datos;
 	
 	public CromosomaHospitales(double tol)
 	{
@@ -39,8 +42,13 @@ public class CromosomaHospitales extends CromosomaEntero
 	@Override
 	public double evalua() 
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		resuelveFenotipo();
+		double suma = 0;
+		for (int i = 0; i < this.datos.getN(); ++i)
+			for (int j = 0; j < this.datos.getN(); ++j)
+				suma = suma + (this.datos.getDistanciaPunto(i, j) * this.datos.getFlujoPunto(i, j));
+				
+		return suma;
 	}
 
 }
