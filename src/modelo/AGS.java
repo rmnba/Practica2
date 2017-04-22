@@ -1,6 +1,7 @@
 package modelo;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Random;
 
 import modelo.cromosomas.Cromosoma;
@@ -11,6 +12,7 @@ import modelo.cromosomas.funcion3.CromosomaF3;
 import modelo.cromosomas.funcion4.CromosomaF4;
 import modelo.cromosomas.funcion4real.CromosomaF4real;
 import modelo.cromosomas.funcion5.CromosomaF5;
+import modelo.genes.Gen;
 import modelo.genes.GenReal;
 
 public class AGS 
@@ -109,6 +111,23 @@ public class AGS
 		return this.elMejor;
 	}
 	
+	private boolean contiene(Cromosoma c, int ini, int fin, Gen valor)
+	{
+		for(int i=ini; i <=fin; ++i)
+			if(c.getGenes()[i].fenotipo() == valor.fenotipo())
+				return true;
+			
+		return false;
+	}
+	
+	private int busca(Cromosoma c, int ini, int fin, Gen valor)
+	{
+		for(int i=ini; i <=fin; ++i)
+			if(c.getGenes()[i].fenotipo() == valor.fenotipo())
+				return i;
+	
+		return -1;
+	}
 	
 	private void notifyAGSTerminado(Cromosoma c) 
 	{
@@ -295,6 +314,334 @@ public class AGS
 		else if(metodoCorte == Cruce.SBX)
 			cruceSBX(padre,madre,hijo1,hijo2);
 		
+		else if(metodoCorte == Cruce.PMX)
+				crucePMX(padre, madre, hijo1, hijo2);
+		
+		else if(metodoCorte == Cruce.OX)
+				cruceOX(padre, madre, hijo1, hijo2);			
+			
+		else if(metodoCorte == Cruce.OX_POSICIONES)
+				cruceOXPosiciones(padre, madre, hijo1, hijo2);
+		
+		else if(metodoCorte == Cruce.CX)
+				cruceCX(padre, madre, hijo1, hijo2);
+			
+		else if(metodoCorte == Cruce.ERX)
+				cruceERX2(padre, madre, hijo1, hijo2);
+			
+		
+	}
+	
+	private ArrayList<Integer> creaCortes(int nCortes, int nVar)
+	{
+		Random ran = new Random();
+		ArrayList<Integer> cortes = new ArrayList<Integer>();
+		Integer corte = 0;
+		for(int i=0; i < nCortes; ++i)
+		{
+			do
+			{
+				corte = ran.nextInt(nVar);
+			}
+			while(cortes.contains(corte));
+			
+			cortes.add(corte);
+		}
+		cortes.sort(new Comparator<Integer>(){
+			@Override
+			public int compare(Integer o1, Integer o2) {
+				if(o1 < o2){
+					return -1;
+				}
+				else if(o1 > o2){
+					return 1;
+				}
+				else{
+					return 0;
+				}
+			}
+			
+		});
+		return cortes;
+	}
+	
+	private void rellenaConexiones(ArrayList<ArrayList<Integer>> conexiones, Cromosoma padre, Cromosoma madre){
+		for(int i=0; i < padre.getnVar(); ++i){
+			conexiones.add(new ArrayList<Integer>());
+		}
+		for(int i=0; i < padre.getnVar(); ++i){
+			if(i == 0){
+				if(!conexiones.get((int)padre.getGenes()[i].getAlelo()).contains((Integer)padre.getGenes()[i+1].getAlelo())){
+					conexiones.get((int)padre.getGenes()[i].getAlelo()).add((Integer)padre.getGenes()[i+1].getAlelo());
+				}
+				if(!conexiones.get((int)madre.getGenes()[i].getAlelo()).contains((Integer)madre.getGenes()[i+1].getAlelo())){
+					conexiones.get((int)madre.getGenes()[i].getAlelo()).add((Integer)madre.getGenes()[i+1].getAlelo());
+				}
+			}
+			else if(i == padre.getnVar()-1){
+				if(!conexiones.get((int)padre.getGenes()[i].getAlelo()).contains((Integer)padre.getGenes()[i-1].getAlelo())){
+					conexiones.get((int)padre.getGenes()[i].getAlelo()).add((Integer)padre.getGenes()[i-1].getAlelo());
+				}
+				if(!conexiones.get((int)madre.getGenes()[i].getAlelo()).contains((Integer)madre.getGenes()[i-1].getAlelo())){
+					conexiones.get((int)madre.getGenes()[i].getAlelo()).add((Integer)madre.getGenes()[i-1].getAlelo());
+				}
+			}
+			else{
+				if(!conexiones.get((int)padre.getGenes()[i].getAlelo()).contains((Integer)padre.getGenes()[i+1].getAlelo())){
+					conexiones.get((int)padre.getGenes()[i].getAlelo()).add((Integer)padre.getGenes()[i+1].getAlelo());
+				}
+				if(!conexiones.get((int)madre.getGenes()[i].getAlelo()).contains((Integer)madre.getGenes()[i+1].getAlelo())){
+					conexiones.get((int)madre.getGenes()[i].getAlelo()).add((Integer)madre.getGenes()[i+1].getAlelo());
+				}
+				if(!conexiones.get((int)padre.getGenes()[i].getAlelo()).contains((Integer)padre.getGenes()[i-1].getAlelo())){
+					conexiones.get((int)padre.getGenes()[i].getAlelo()).add((Integer)padre.getGenes()[i-1].getAlelo());
+				}
+				if(!conexiones.get((int)madre.getGenes()[i].getAlelo()).contains((Integer)madre.getGenes()[i-1].getAlelo())){
+					conexiones.get((int)madre.getGenes()[i].getAlelo()).add((Integer)madre.getGenes()[i-1].getAlelo());
+				}
+			}
+		}
+	}
+	
+	private void cruceERX2(Cromosoma padre, Cromosoma madre, Cromosoma hijo1, Cromosoma hijo2) {
+		ArrayList<ArrayList<Integer>> conexionesP = new ArrayList<ArrayList<Integer>>(padre.getnVar());		
+		ArrayList<ArrayList<Integer>> conexionesM = new ArrayList<ArrayList<Integer>>(padre.getnVar());
+		rellenaConexiones(conexionesP, padre, madre);
+		rellenaConexiones(conexionesM, padre, madre);
+		
+		hijo1.getGenes()[0] = padre.getGenes()[0].copia();
+		for(int k=0; k < padre.getnVar(); ++k){
+			if(conexionesP.get(k).contains( hijo1.getGenes()[0].fenotipo())){
+				conexionesP.get(k).remove(hijo1.getGenes()[0].fenotipo());
+			}
+		}
+		int i=1;
+		boolean bloqueo = false;
+		while(i < padre.getnVar() && !bloqueo){
+			int col = (int)hijo1.getGenes()[i-1].fenotipo();
+			int nConexiones = conexionesP.get(col).size(); 
+			int mejor, posMejor = 0, actual, ciudad;
+			mejor = Integer.MAX_VALUE;
+			for(int fila=0; fila < nConexiones; ++fila){
+				ciudad = conexionesP.get(col).get(fila);
+				actual = conexionesP.get(ciudad).size();
+				if(actual < mejor){
+					mejor = actual;
+					posMejor = fila;
+				}
+			}
+			if(nConexiones == 0 || (mejor == 0 && i != padre.getnVar()-1)){
+				bloqueo = true;
+			}
+			else{
+				ciudad = conexionesP.get(col).get(posMejor);
+				hijo1.getGenes()[i].setAlelo(ciudad);
+				for(int k=0; k < padre.getnVar(); ++k){
+					if(conexionesP.get(k).contains((Integer) ciudad)){
+						conexionesP.get(k).remove((Integer) ciudad);
+					}
+				}
+				++i;
+			}
+		}
+		/*if(bloqueo){
+			Debugger.erxFallido++;
+			hijo1 = padre.copia();
+		}
+		Debugger.erxEjecutado++;*/
+		
+		hijo2 = madre.copia();
+	}
+	
+	/*private void cruceOrdinal(Cromosoma padre, Cromosoma madre, Cromosoma hijo1, Cromosoma hijo2){
+		ArrayList<Integer> dinamica = new ArrayList<Integer>();
+		ArrayList<Integer> dinamicaP = new ArrayList<Integer>();
+		ArrayList<Integer> dinamicaM = new ArrayList<Integer>();
+		ArrayList<Integer> cPadre = new ArrayList<Integer>();
+		ArrayList<Integer> cMadre = new ArrayList<Integer>();
+		ArrayList<Integer> ordenPadre = new ArrayList<Integer>();
+		ArrayList<Integer> ordenMadre = new ArrayList<Integer>();
+		for(int i=0; i < padre.getnVar(); ++i){
+			dinamica.add(i);
+			cPadre.add((int) padre.getGenes()[i].fenotipo());
+			cMadre.add((int) madre.getGenes()[i].fenotipo());
+		}
+		Collections.shuffle(dinamica);
+		for(int i=0; i < padre.getnVar(); ++i){
+			dinamicaP.add(dinamica.get(i));
+			dinamicaM.add(dinamica.get(i));
+			
+		}
+		int posP, posM, eP, eM;
+		for(int i=0; i < padre.getnVar(); ++i){
+			eP = cPadre.get(i);
+			eM = cMadre.get(i);
+			posP = dinamicaP.indexOf(eP);
+			posM = dinamicaM.indexOf(eM);
+			ordenPadre.add(posP);
+			ordenMadre.add(posM);
+			dinamicaP.remove(posP);
+			dinamicaM.remove(posM);
+		}
+		for(int i=0; i < padre.getnVar(); ++i){
+			dinamicaP.add(dinamica.get(i));
+			dinamicaM.add(dinamica.get(i));
+			
+		}
+		ArrayList<Integer> cortes = creaCortes(1, padre.getnVar());
+		for(int i=0; i < cortes.get(0); ++i){
+			hijo1.getGenes()[i].setAlelo(dinamicaP.get(ordenPadre.get(i)));
+			hijo2.getGenes()[i].setAlelo(dinamicaM.get(ordenMadre.get(i)));
+			dinamicaP.remove((int)ordenPadre.get(i));
+			dinamicaM.remove((int)ordenMadre.get(i));
+		}
+		for(int i=cortes.get(0); i < padre.getnVar(); ++i){
+			hijo1.getGenes()[i].setAlelo(dinamicaP.get(ordenMadre.get(i)));
+			hijo2.getGenes()[i].setAlelo(dinamicaM.get(ordenPadre.get(i)));
+			dinamicaP.remove((int)ordenMadre.get(i));
+			dinamicaM.remove((int)ordenPadre.get(i));
+		}
+		hijo1.resuelveFenotipo();
+		hijo2.resuelveFenotipo();
+	}*/
+	
+	private void cruceCX(Cromosoma padre, Cromosoma madre, Cromosoma hijo1, Cromosoma hijo2){
+		for (int i = 0; i < padre.getnVar(); i++) {
+			hijo1.getGenes()[i] = padre.getGenes()[0].copia();	// Simplemente para inicializar cada gen
+			hijo2.getGenes()[i] = padre.getGenes()[0].copia();
+			hijo1.getGenes()[i].setAlelo(-1);
+			hijo2.getGenes()[i].setAlelo(-1);
+		}
+		hijo1.resuelveFenotipo();
+		hijo2.resuelveFenotipo();
+		int index = 0;
+		while(hijo1.getGenes()[index].fenotipo() == -1){
+			hijo1.getGenes()[index] = padre.getGenes()[index].copia();
+			index = (int) madre.getGenes()[index].fenotipo();
+		}
+		for (int i = 0; i < padre.getnVar(); i++) {
+			if(hijo1.getGenes()[i].fenotipo() == -1){
+				hijo1.getGenes()[i] = madre.getGenes()[i].copia();
+			}
+		}
+		index = 0;
+		while(hijo2.getGenes()[index].fenotipo() == -1){
+			hijo2.getGenes()[index] = madre.getGenes()[index].copia();
+			index = (int) padre.getGenes()[index].fenotipo();
+		}
+		for (int i = 0; i < padre.getnVar(); i++) {
+			if(hijo2.getGenes()[i].fenotipo() == -1){
+				hijo2.getGenes()[i] = padre.getGenes()[i].copia();
+			}
+		}
+		hijo1.resuelveFenotipo();
+		hijo2.resuelveFenotipo();
+	}
+	private void cruceOXPosiciones(Cromosoma padre, Cromosoma madre, Cromosoma hijo1, Cromosoma hijo2){
+		ArrayList<Integer> posiciones = creaCortes(4, padre.getnVar());
+		ArrayList<Integer> posMadre = new ArrayList<Integer>(4);
+		for(int i=0; i<padre.getnVar(); ++i){
+			hijo1.getGenes()[i] = padre.getGenes()[i].copia();
+			hijo2.getGenes()[i] = madre.getGenes()[i].copia();
+		}
+		for(int i=0; i < 4; ++i){
+			posMadre.add(busca(madre, 0, padre.getnVar(), padre.getGenes()[posiciones.get(i)]));
+		}
+		for(int i=0; i < 4; ++i){
+			hijo1.getGenes()[posiciones.get(i)] = madre.getGenes()[posMadre.get(i)].copia();
+			hijo2.getGenes()[posMadre.get(i)] = padre.getGenes()[posiciones.get(i)].copia();
+		}
+	}
+	private void cruceOX(Cromosoma padre, Cromosoma madre, Cromosoma hijo1, Cromosoma hijo2){
+		ArrayList<Integer> cortes = creaCortes(2, padre.getnVar());
+		
+		int indexH;
+		
+		for (int i = cortes.get(0); i <= cortes.get(1); i++) {
+			hijo1.getGenes()[i] = madre.getGenes()[i].copia();
+			hijo2.getGenes()[i] = padre.getGenes()[i].copia();
+		}
+		// Para el hijo 1
+		indexH = cortes.get(1)+1;
+		for(int i=cortes.get(1)+1; i < padre.getnVar(); ++i){
+			// Bucle desde 2o punto de corte hasta el final
+			if(!contiene(hijo1, cortes.get(0), cortes.get(1), padre.getGenes()[i])){
+				hijo1.getGenes()[indexH] = padre.getGenes()[i].copia();
+				indexH++;
+			}
+		}
+		if(indexH >= padre.getnVar()) indexH = 0;
+		for(int i=0; i <= cortes.get(1); ++i){
+			// Bucle desde principio hasta 1er punto de corte
+			if(!contiene(hijo1, cortes.get(0), cortes.get(1), padre.getGenes()[i])){
+				hijo1.getGenes()[indexH] = padre.getGenes()[i].copia();
+				indexH++;
+				if(indexH >= padre.getnVar()) indexH = 0;
+			}
+		}
+		// Para el hijo 2
+		indexH = cortes.get(1)+1;
+		for(int i=cortes.get(1)+1; i < padre.getnVar(); ++i){
+			// Bucle desde 2o punto de corte hasta el final
+			if(!contiene(hijo2, cortes.get(0), cortes.get(1), madre.getGenes()[i])){
+				hijo2.getGenes()[indexH] = madre.getGenes()[i].copia();
+				indexH++;
+			}
+		}
+		if(indexH >= padre.getnVar()) indexH = 0;
+		for(int i=0; i <= cortes.get(1); ++i){
+			// Bucle desde principio hasta 1er punto de corte
+			if(!contiene(hijo2, cortes.get(0), cortes.get(1), madre.getGenes()[i])){
+				hijo2.getGenes()[indexH] = madre.getGenes()[i].copia();
+				indexH++;
+				if(indexH >= padre.getnVar()) indexH = 0;
+			}
+		}
+	}
+	private void crucePMX(Cromosoma padre, Cromosoma madre, Cromosoma hijo1, Cromosoma hijo2){
+		ArrayList<Integer> cortes = creaCortes(2, padre.getnVar());
+
+		Gen[] reemplazo1 = new Gen[padre.getnVar()];
+		Gen[] reemplazo2 = new Gen[padre.getnVar()];
+
+		for (int i = 0; i < padre.getnVar(); i++) {
+			reemplazo1[i] = padre.getGenes()[0].copia();	// Simplemente para inicializar cada gen
+			reemplazo2[i] = padre.getGenes()[0].copia();
+			reemplazo1[i].setAlelo(-1);
+			reemplazo2[i].setAlelo(-1);
+		}
+
+		for (int i = cortes.get(0); i <= cortes.get(1); i++) {
+			hijo1.getGenes()[i] = madre.getGenes()[i].copia();
+			hijo2.getGenes()[i] = padre.getGenes()[i].copia();
+
+			reemplazo1[(int) madre.getGenes()[i].fenotipo()] = padre.getGenes()[i].copia();
+			reemplazo2[(int) padre.getGenes()[i].fenotipo()] = madre.getGenes()[i].copia();
+		}
+
+		// fill in remaining slots with replacements
+		for (int i = 0; i < padre.getnVar(); i++) {
+			if ((i < cortes.get(0)) || (i > cortes.get(1))) {
+				Gen n1 = padre.getGenes()[i].copia();
+				Gen m1 = reemplazo1[(int) n1.fenotipo()];
+
+				Gen n2 =madre.getGenes()[i].copia();
+				Gen m2 = reemplazo2[(int) n2.fenotipo()];
+
+				while (m1.fenotipo() != -1) {
+					n1 = m1;
+					m1 = reemplazo1[(int) m1.fenotipo()];
+				}
+
+				while (m2.fenotipo() != -1) {
+					n2 = m2;
+					m2 = reemplazo2[(int) m2.fenotipo()];
+				}
+
+				hijo1.getGenes()[i] = n1;
+				hijo2.getGenes()[i] = n2;
+			}
+		}
 	}
 	
 	private void cruceSBX(Cromosoma padre, Cromosoma madre, Cromosoma hijo1, Cromosoma hijo2)

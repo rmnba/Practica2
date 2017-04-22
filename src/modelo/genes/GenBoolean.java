@@ -88,8 +88,15 @@ public class GenBoolean extends Gen
 		this.tam = tam;
 	}
 
+	@Override
 	public boolean[] getAlelo() 
 	{
 		return this.alelo;
+	}
+
+	@Override
+	public void setAlelo(Object alelo) 
+	{
+		this.alelo = (boolean[]) alelo;
 	} 
 }

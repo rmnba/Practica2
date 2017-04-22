@@ -50,15 +50,22 @@ public class GenReal extends Gen
 		
 	}
 
-	public void setAlelo(double alelo) 
+	@Override
+	public void setAlelo(Object alelo) 
 	{
-		this.alelo = alelo;
+		this.alelo = (double) alelo;
 	}
 
 	@Override
 	public void setTam(int tam) 
 	{
 		this.tam = tam;
+	}
+	
+	@Override
+	public Object getAlelo() 
+	{
+		return this.alelo;
 	}
 
 }

@@ -50,5 +50,10 @@ public class CromosomaHospitales extends CromosomaEntero
 				
 		return suma;
 	}
+	
+	public void setDatos (Datos datos)
+	{
+		this.datos = datos;
+	}
 
 }

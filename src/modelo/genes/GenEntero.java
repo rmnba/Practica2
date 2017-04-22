@@ -50,7 +50,8 @@ public class GenEntero extends Gen
 		}
 	}
 
-	public void setAlelo(double alelo) 
+	@Override
+	public void setAlelo(Object alelo) 
 	{
 		this.alelo = (int) alelo;
 	}	
@@ -59,6 +60,12 @@ public class GenEntero extends Gen
 	public void setTam(int tam) 
 	{
 		this.tam = tam;
+	}
+
+	@Override
+	public Object getAlelo() 
+	{
+		return this.alelo;
 	}
 
 }

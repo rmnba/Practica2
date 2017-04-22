@@ -49,6 +49,4 @@ public abstract class FactoriaCromosomas
 	public abstract void setTol(double tol);
 
 	public abstract void setnVar(int nVar);
-	
-	
 }

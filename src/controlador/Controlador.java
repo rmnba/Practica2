@@ -2,11 +2,14 @@ package controlador;
 
 import modelo.AGS;
 import modelo.Observador;
+import modelo.Parseador;
 import modelo.Cruce;
+import modelo.Datos;
 import modelo.Funcion;
 import modelo.Select;
 import modelo.cromosomas.Cromosoma;
 import modelo.cromosomas.factoria.FactoriaCromosomas;
+import modelo.cromosomas.hospital.CromosomaHospitales;
 
 public class Controlador 
 {
@@ -130,6 +133,7 @@ public class Controlador
 				maximizar = false;
 				break;
 			case HOSPITAL:
+				Datos datos = Parseador.parsear("/Archivosdatos/datos30.dat");
 				double[] xMaxHosp = new double[n];
 				double[] xMinHosp = new double[n];
 				FactoriaCromosomas.getInstancia().setxMax(xMaxHosp);
@@ -138,6 +142,7 @@ public class Controlador
 				FactoriaCromosomas.getInstancia().setnVar(n);
 				
 				this.cromosoma = FactoriaCromosomas.getInstancia().creaCromosomaHospitales();
+				((CromosomaHospitales) this.cromosoma).setDatos(datos);
 				maximizar = false;
 				break;
 			default:

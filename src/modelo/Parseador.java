@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class Parseador {
 	
-	public Datos parsear(String archivo) {
+	public static Datos parsear(String archivo) {
 		
 		Scanner sc = null;
 		try {

@@ -50,8 +50,10 @@ public class Ventana extends JFrame implements Observador, ActionListener
 	private JTextField tfprobMutacion;
 	private JTextField tfSemilla;
 	private JLabel lbN;
+	private JLabel labelMutacion;
 	private JTextField tfN;
 	private JCheckBox cbElitismo;
+	private JCheckBox cbContractividad;
 	
 	private JButton run;
 	private JButton reRun;
@@ -85,6 +87,7 @@ public class Ventana extends JFrame implements Observador, ActionListener
 		cbSeleccion = new JComboBox<String>(selecciones);
 		cbSeleccion.setSelectedIndex(0);
 		cbMutacion = new JComboBox<Mutacion>(mutaciones);
+		cbMutacion.setSelectedIndex(0);
 		
 		tfTolerancia = new JTextField("0.001", 6);
 		tfPoblacion = new JTextField("100", 6);
@@ -95,10 +98,13 @@ public class Ventana extends JFrame implements Observador, ActionListener
 		tfN = new JTextField("1", 6);
 		lbN = new JLabel("n");
 		
+		labelMutacion = new JLabel("Mutacion");
+		
 		tfN.setVisible(false);
 		lbN.setVisible(false);
 		
 		cbElitismo = new JCheckBox();
+		cbContractividad = new JCheckBox();
 		
 		run = new JButton("Ejecuta este AG");
 		reRun = new JButton("Volver a ejecutar este mismo AG");
@@ -118,6 +124,9 @@ public class Ventana extends JFrame implements Observador, ActionListener
 		taResultados.setPreferredSize(new Dimension(800,200));
 		taResultados.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.GRAY), "Resultados"));
 		taResultados.setEditable(false);
+		taResultados.setAutoscrolls(true);
+		taResultados.setLineWrap(true);
+		taResultados.setWrapStyleWord(true);
 		JPanel panelFunciones = new JPanel();
 		panelFunciones.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.GRAY), "Funcion"));
 		panelFunciones.setLayout(new GridLayout(2,2));
@@ -156,8 +165,12 @@ public class Ventana extends JFrame implements Observador, ActionListener
 		panelParametros.add(cbCruce);
 		panelParametros.add(new JLabel("Seleccion"));
 		panelParametros.add(cbSeleccion);
+		panelParametros.add(labelMutacion);
+		panelParametros.add(cbMutacion);
 		panelParametros.add(new JLabel("Elitismo"));
 		panelParametros.add(cbElitismo);
+		panelParametros.add(new JLabel("Contractividad"));
+		panelParametros.add(cbContractividad);
 		
 		panelAcciones.add(run);
 		panelAcciones.add(reRun);
@@ -304,7 +317,7 @@ public class Ventana extends JFrame implements Observador, ActionListener
 				lbN.setVisible(true);
 				tfN.setVisible(true);
 			}
-			else if(cbFuncion.getSelectedItem() == Funcion.FUNCION4R)
+			else if(cbFuncion.getSelectedItem() == Funcion.FUNCION4R || cbFuncion.getSelectedItem() == Funcion.HOSPITAL)
 			{
 				lbN.setVisible(true);
 				tfN.setVisible(true);
