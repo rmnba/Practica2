@@ -36,4 +36,11 @@ public class Parseador {
 				
 		return new Datos(distancia, flujo, n);
 	}
+	
+	public static void main(String[] args)
+	{
+		Datos datos = Parseador.parsear("Archivosdatos/datos30.dat");
+		
+		System.out.println(datos.getN());
+	}
 }

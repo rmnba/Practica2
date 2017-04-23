@@ -133,7 +133,7 @@ public class Controlador
 				maximizar = false;
 				break;
 			case HOSPITAL:
-				Datos datos = Parseador.parsear("/Archivosdatos/datos30.dat");
+				Datos datos = Parseador.parsear("Archivosdatos/datos30.dat");
 				double[] xMaxHosp = new double[n];
 				double[] xMinHosp = new double[n];
 				FactoriaCromosomas.getInstancia().setxMax(xMaxHosp);
