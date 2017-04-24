@@ -233,7 +233,7 @@ public class Ventana extends JFrame implements Observador, ActionListener
 		{
 			try
 			{
-				c.setParametersRun((Funcion)cbFuncion.getSelectedItem(), Integer.parseInt(tfN.getText()), Double.parseDouble(tfTolerancia.getText()), Integer.parseInt(tfPoblacion.getText()), Integer.parseInt(tfGeneraciones.getText()), Double.parseDouble(tfprobCruces.getText())/100, Double.parseDouble(tfprobMutacion.getText())/100, Long.parseLong(tfSemilla.getText()), (Cruce)cbCruce.getSelectedItem(), seleccion, cbElitismo.isSelected());
+				c.setParametersRun((Funcion)cbFuncion.getSelectedItem(), Integer.parseInt(tfN.getText()), Double.parseDouble(tfTolerancia.getText()), Integer.parseInt(tfPoblacion.getText()), Integer.parseInt(tfGeneraciones.getText()), Double.parseDouble(tfprobCruces.getText())/100, Double.parseDouble(tfprobMutacion.getText())/100, Long.parseLong(tfSemilla.getText()), (Cruce)cbCruce.getSelectedItem(), seleccion, (Mutacion) cbMutacion.getSelectedItem(), cbElitismo.isSelected());
 				taResultados.setForeground(Color.BLACK);
 			}
 			catch(NumberFormatException ex)
@@ -271,7 +271,7 @@ public class Ventana extends JFrame implements Observador, ActionListener
 		{
 			try
 			{
-				c.setParametersReRun((Funcion)cbFuncion.getSelectedItem(), Integer.parseInt(tfN.getText()), Double.parseDouble(tfTolerancia.getText()), Integer.parseInt(tfPoblacion.getText()), Integer.parseInt(tfGeneraciones.getText()), Double.parseDouble(tfprobCruces.getText())/100, Double.parseDouble(tfprobMutacion.getText())/100, Long.parseLong(tfSemilla.getText()), (Cruce)cbCruce.getSelectedItem(), seleccion, cbElitismo.isSelected());
+				c.setParametersReRun((Funcion)cbFuncion.getSelectedItem(), Integer.parseInt(tfN.getText()), Double.parseDouble(tfTolerancia.getText()), Integer.parseInt(tfPoblacion.getText()), Integer.parseInt(tfGeneraciones.getText()), Double.parseDouble(tfprobCruces.getText())/100, Double.parseDouble(tfprobMutacion.getText())/100, Long.parseLong(tfSemilla.getText()), (Cruce)cbCruce.getSelectedItem(), seleccion, (Mutacion) cbMutacion.getSelectedItem(), cbElitismo.isSelected());
 				taResultados.setForeground(Color.BLACK);
 			}
 			catch(NumberFormatException ex)

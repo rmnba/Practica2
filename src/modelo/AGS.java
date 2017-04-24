@@ -38,7 +38,7 @@ public class AGS
 	
 	private ArrayList<Observador> obs = new ArrayList<Observador>();
 	
-	public AGS(int tam, Cromosoma cromosoma, int maxGen, double probCruce, double probMutacion, Select metodo, Cruce metodoCorte, boolean elitismo, boolean maximizar, long seed)
+	public AGS(int tam, Cromosoma cromosoma, int maxGen, double probCruce, double probMutacion, Select metodo, Cruce metodoCorte, boolean elitismo, boolean maximizar, long seed, Mutacion mutacion)
 	{
 		this.pob = new Poblacion(tam, cromosoma);
 		this.pob.setSeed(seed);
@@ -52,6 +52,7 @@ public class AGS
 		this.metodoCorte = metodoCorte;
 		this.elitismo = elitismo;
 		this.maximizar = maximizar;
+		this.metodoMut = mutacion;
 		this.generator = new Random(seed);
 	}
 	
