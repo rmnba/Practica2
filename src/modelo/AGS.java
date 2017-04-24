@@ -1,7 +1,9 @@
 package modelo;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Random;
 
 import modelo.cromosomas.Cromosoma;
@@ -24,6 +26,8 @@ public class AGS
 	private int indexElMejor;
 	private double probCruce;
 	private double probMutacion;
+	
+	private Mutacion metodoMut;
 	
 	private Select metodoSel;
 	private boolean elitismo;
@@ -65,7 +69,7 @@ public class AGS
 		
 	}
 	
-	public Cromosoma ejecuta(Cromosoma cromosoma) 
+	public Cromosoma ejecuta(Cromosoma cromosoma)
 	{
 		pob.inicializa(cromosoma);
 		this.evaluarPoblacion();
@@ -717,7 +721,7 @@ public class AGS
 		}
 	}
 	
-	private void mutacion()
+	/*private void mutacion()
 	{
 		for(int i=0; i < this.pob.getTam(); ++i)	
 			// Para todos los individuos de la Pob
@@ -725,7 +729,159 @@ public class AGS
 				// Para todos los genes de ese individuo (Cromosoma)
 				pob.getIndividuos()[i].getGenes()[j].mutar(this.probMutacion);
 			
+	}*/
+	
+	private void mutacion(){
+		switch(metodoMut){
+		/*case BINARIO:
+			for(int i=0; i < this.pob.tam; ++i){		
+				// Para todos los individuos de la Pob
+				for(int j=0; j < pob.individuos[i].getnVar(); ++j){
+					// Para todos los genes de ese individuo (Cromosoma)
+					pob.individuos[i].getGenes()[j].mutar(this.probMutacion);
+				}
+			}
+			break;*/
+		case HEURISTICA:
+			mutacionHeuristica();
+			break;
+		case INSERCION:
+			mutacionInsercion();
+			break;
+		case INTERCAMBIO:
+			mutacionIntercambio();
+			break;
+		case INVERSION:
+			mutacionInversion();
+			break;
+		default:
+			break;
+		
+		}
 	}
+	
+	 public ArrayList<List<Integer>> permute(Collection<Integer> input) {
+	        ArrayList<List<Integer>> output = new ArrayList<List<Integer>>();
+	        if (input.isEmpty()) {
+	            output.add(new ArrayList<Integer>());
+	            return output;
+	        }
+	        List<Integer> list = new ArrayList<Integer>(input);
+	        Integer head = list.get(0);
+	        List<Integer> rest = list.subList(1, list.size());
+	        for (List<Integer> permutations : permute(rest)) {
+	            List<List<Integer>> subLists = new ArrayList<List<Integer>>();
+	            for (int i = 0; i <= permutations.size(); i++) {
+	                List<Integer> subList = new ArrayList<Integer>();
+	                subList.addAll(permutations);
+	                subList.add(i, head);
+	                subLists.add(subList);
+	            }
+	            output.addAll(subLists);
+	        }
+	        return output;
+	    }
+	
+	private void mutacionHeuristica() {
+		double prob;	
+		int n= this.pob.getIndividuos()[0].getnVar();
+		ArrayList<Integer> cortes = creaCortes(3, n);
+		for (int i=0; i < this.pob.getTam(); ++i){
+			prob = generator.nextDouble();
+			if(prob < probMutacion){
+				ArrayList<Integer> aux = new ArrayList<Integer>();
+				ArrayList<List<Integer>> perm = new ArrayList<List<Integer>>();
+				ArrayList<Cromosoma> cobayas = new ArrayList<Cromosoma>();
+				aux.add((Integer) this.pob.getIndividuos()[i].getGenes()[cortes.get(0)].getAlelo());
+				aux.add((Integer) this.pob.getIndividuos()[i].getGenes()[cortes.get(1)].getAlelo());
+				aux.add((Integer) this.pob.getIndividuos()[i].getGenes()[cortes.get(2)].getAlelo());
+				perm =  permute(aux);
+				for(int j=0; j < 6; ++j){
+					cobayas.add(this.pob.getIndividuos()[i].copia());
+				}
+				for(int j=0; j < 6; ++j){
+					cobayas.get(j).getGenes()[cortes.get(0)].setAlelo(perm.get(j).get(0));
+					cobayas.get(j).getGenes()[cortes.get(1)].setAlelo(perm.get(j).get(1));
+					cobayas.get(j).getGenes()[cortes.get(2)].setAlelo(perm.get(j).get(2));
+				}
+				int mejor = 0;
+				double ev, evMejor = Double.MAX_VALUE;
+				for(int j=0; j < 6; ++j){
+					ev = cobayas.get(j).evalua();
+					if(ev < evMejor){
+						evMejor = ev;
+						mejor = j;
+					}
+				}
+				this.pob.getIndividuos()[i] = cobayas.get(mejor).copia();
+				this.pob.getIndividuos()[i].resuelveFenotipo();
+			}
+		}
+	}
+
+	private void mutacionIntercambio() {
+		double prob;
+		int aux;
+		int n= this.pob.getIndividuos()[0].getnVar();
+		ArrayList<Integer> cortes = creaCortes(2, n);
+		for (int i=0; i < this.pob.getTam(); ++i){
+			prob = generator.nextDouble();
+			if(prob < probMutacion){
+				int ini = cortes.get(0);
+				int fin = cortes.get(1);
+				aux = (int) this.pob.getIndividuos()[i].getGenes()[ini].getAlelo();
+				this.pob.getIndividuos()[i].getGenes()[ini].setAlelo((int) this.pob.getIndividuos()[i].getGenes()[fin].getAlelo());
+				this.pob.getIndividuos()[i].getGenes()[fin].setAlelo(aux);
+				this.pob.getIndividuos()[i].resuelveFenotipo();
+			}
+		}
+		
+	}
+
+	private void mutacionInversion() {
+		double prob;
+		int aux;
+		int n= this.pob.getIndividuos()[0].getnVar();
+		ArrayList<Integer> cortes = creaCortes(2, n);
+		for (int i=0; i < this.pob.getTam(); ++i){
+			prob = generator.nextDouble();
+			if(prob < probMutacion){
+				int ini = cortes.get(0);
+				int fin = cortes.get(1);
+				while(ini < fin){
+					aux = (int) this.pob.getIndividuos()[i].getGenes()[ini].getAlelo();
+					this.pob.getIndividuos()[i].getGenes()[ini].setAlelo((int) this.pob.getIndividuos()[i].getGenes()[fin].getAlelo());
+					this.pob.getIndividuos()[i].getGenes()[fin].setAlelo(aux);
+					ini++;
+					fin--;
+				}
+				this.pob.getIndividuos()[i].resuelveFenotipo();
+			}
+		}
+		
+	}
+
+	private void mutacionInsercion() {
+		double prob;
+		int pos, elem;
+		Gen aux;
+		int n= this.pob.getIndividuos()[0].getnVar();
+		for (int i=0; i < this.pob.getTam(); ++i){
+			prob = generator.nextDouble();
+			if(prob < probMutacion){
+				pos = generator.nextInt(n-1);
+				do{
+					elem = generator.nextInt(n);
+				}while(elem <= pos);
+				aux = this.pob.getIndividuos()[i].getGenes()[elem].copia();
+				for(int j=elem; j > pos; --j){
+					this.pob.getIndividuos()[i].getGenes()[j] = this.pob.getIndividuos()[i].getGenes()[j-1].copia();
+				}
+				this.pob.getIndividuos()[i].getGenes()[pos] = aux;
+			}
+		}
+	}
+
 	
 	private void ajustaAptitud()
 	{

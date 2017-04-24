@@ -45,9 +45,8 @@ public class GenEntero extends Gen
 	{
 		double prob;
 		prob = generator.nextDouble();
-		if(prob < probMutacion){
+		if(prob < probMutacion)
 			this.alelo = (int)(xMin + (generator.nextInt()*xMax));
-		}
 	}
 
 	@Override

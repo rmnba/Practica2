@@ -4,7 +4,9 @@ import modelo.Datos;
 import modelo.Parseador;
 import modelo.cromosomas.Cromosoma;
 import modelo.cromosomas.CromosomaEntero;
+import modelo.genes.Gen;
 import modelo.genes.GenEntero;
+import modelo.genes.factoria.FactoriaGenes;
 
 public class CromosomaHospitales extends CromosomaEntero
 {
@@ -49,16 +51,7 @@ public class CromosomaHospitales extends CromosomaEntero
 		int distancia[][] = datos.getDistancia();
 		int flujo[][] = datos.getFlujo();
 		int n = this.nVar;
-		/*
-		suma += distancia[27][(int) this.genes[0].fenotipo()];
-		for(int i=0; i < (this.nVar-1); ++i){
-			int a = (int) this.genes[i].fenotipo();
-			int b = (int) this.genes[i+1].fenotipo();
-			suma += distancia[a][b];
-		}
-		suma += distancia[(int) this.genes[nVar-1].fenotipo()][27]; 
-		*/
-		//int sumas[] = new int[n];
+		
 		int a = distancia[n - 1][(int) this.genes[0].fenotipo()];
 		int b = flujo[n - 1][(int) this.genes[0].fenotipo()];
 		suma = suma + (a*b);
@@ -72,12 +65,50 @@ public class CromosomaHospitales extends CromosomaEntero
 			b = (int) this.genes[i + 1].fenotipo();
 			suma += (a*b);
 		}
-		//int num = (int) this.generator.nextDouble() * n + 0;
+
 		a = distancia[nVar-1][(int) this.genes[n - 1].fenotipo()];
 		b = flujo[nVar-1][(int) this.genes[n - 1].fenotipo()];
 		suma += (a*b);
 		
 		return suma;
+	}
+	
+	@Override
+	public void aniadeGen(double xMax, double xMin) 
+	{
+		Gen nuevo = FactoriaGenes.getInstancia().creaGenEntero(1, xMax, xMin, tol, generator);
+		while(this.contiene((GenEntero) nuevo))
+		{
+			nuevo.setAlelo((int) nuevo.getAlelo()+1);
+			if((int) nuevo.getAlelo() > xMax)
+				nuevo.setAlelo((int)xMin);
+		}
+		Gen[] nuevosGenes = new Gen[nVar + 1];
+		for(int i=0; i< nVar; ++i)
+			nuevosGenes[i] = genes[i];
+		
+		nuevosGenes[nVar] = nuevo;
+		this.genes = nuevosGenes;
+		this.nVar++;
+		resuelveFenotipo();
+	}
+	
+	private boolean contiene(GenEntero hospital)
+	{
+		boolean encontrado = false;
+		int i=0;
+		if((int) hospital.getAlelo() == nVar)
+			return true;
+		
+		while(!encontrado && i < nVar)
+			if(this.genes[i].fenotipo() == hospital.fenotipo())
+				encontrado = true;
+			
+			else
+				++i;
+			
+		
+		return encontrado;
 	}
 
 }

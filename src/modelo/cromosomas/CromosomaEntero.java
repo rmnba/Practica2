@@ -19,26 +19,7 @@ public abstract class CromosomaEntero extends Cromosoma
 	
 	public abstract double evalua();
 	
-	@Override
-	public void aniadeGen(double xMax, double xMin) 
-	{
-		int lGen = (int) Math.round((Math.log10(1+((xMax-xMin)/tol))/Math.log10(2)) + 0.5);
-		/*
-		 * Para hacer el log base 2, usamos el cambio de base.
-		 * Para hacer el redondeo superior, sumamos 0.5 y usamos el redondeo normal.
-		 */
-		lCrom += lGen;	
-		Gen nuevo = FactoriaGenes.getInstancia().creaGenEntero(lGen, xMax, xMin, tol, generator);
-		
-		Gen[] nuevosGenes = new Gen[nVar + 1];
-		for(int i=0; i< nVar; ++i)
-			nuevosGenes[i] = genes[i];
-		
-		nuevosGenes[nVar] = nuevo;
-		this.genes = nuevosGenes;
-		this.nVar++;
-		resuelveFenotipo();
-	}
+	public abstract void aniadeGen(double xMax, double xMin);
 	
 	@Override
 	public String toString()
