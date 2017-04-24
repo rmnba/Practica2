@@ -752,7 +752,7 @@ public class AGS
 		ajustaAptitud();
 		
 		// Buscamos el maximo
-		for(int i=0;  i < pob.getTam(); ++i)
+		for(int i=0; i < pob.getTam(); ++i)
 		{
 			aux = pob.getIndividuos()[i].getAptitud();
 			sumaAptitud += aux;

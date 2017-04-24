@@ -13,14 +13,14 @@ public class Datos
 		this.n = n;
 	}
 	
-	public int getDistanciaPunto(int a, int b)
+	public int [][] getDistancia()
 	{
-		return this.distancia[a][b];
+		return this.distancia;
 	}
 	
-	public int getFlujoPunto(int a, int b)
+	public int [][] getFlujo()
 	{
-		return this.flujo[a][b] ;
+		return this.flujo;
 	}
 	
 	public int getN()

@@ -2,14 +2,11 @@ package controlador;
 
 import modelo.AGS;
 import modelo.Observador;
-import modelo.Parseador;
 import modelo.Cruce;
-import modelo.Datos;
 import modelo.Funcion;
 import modelo.Select;
 import modelo.cromosomas.Cromosoma;
 import modelo.cromosomas.factoria.FactoriaCromosomas;
-import modelo.cromosomas.hospital.CromosomaHospitales;
 
 public class Controlador 
 {
@@ -94,7 +91,8 @@ public class Controlador
 			case FUNCION4:
 				double[] xMax4 = new double[n];
 				double[] xMin4 = new double[n];
-				for(int i=0; i < n; ++i){
+				for(int i=0; i < n; ++i)
+				{
 					xMax4[i] = Math.PI;
 					xMin4[i] = 0;
 				}
@@ -109,7 +107,8 @@ public class Controlador
 			case FUNCION4R:
 				double[] xMax4r = new double[n];
 				double[] xMin4r = new double[n];
-				for(int i=0; i < n; ++i){
+				for(int i=0; i < n; ++i)
+				{
 					xMax4r[i] = Math.PI;
 					xMin4r[i] = 0;
 				}
@@ -133,16 +132,19 @@ public class Controlador
 				maximizar = false;
 				break;
 			case HOSPITAL:
-				Datos datos = Parseador.parsear("Archivosdatos/datos30.dat");
 				double[] xMaxHosp = new double[n];
 				double[] xMinHosp = new double[n];
+				for(int i=0; i < n; ++i)
+				{
+					xMaxHosp[i] = n - 1;
+					xMinHosp[i] = 0;
+				}
 				FactoriaCromosomas.getInstancia().setxMax(xMaxHosp);
 				FactoriaCromosomas.getInstancia().setxMin(xMinHosp);
 				FactoriaCromosomas.getInstancia().setTol(tol);
 				FactoriaCromosomas.getInstancia().setnVar(n);
 				
 				this.cromosoma = FactoriaCromosomas.getInstancia().creaCromosomaHospitales();
-				((CromosomaHospitales) this.cromosoma).setDatos(datos);
 				maximizar = false;
 				break;
 			default:
