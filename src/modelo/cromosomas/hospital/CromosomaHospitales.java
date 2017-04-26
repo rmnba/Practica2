@@ -11,7 +11,7 @@ import modelo.genes.factoria.FactoriaGenes;
 public class CromosomaHospitales extends CromosomaEntero
 {
 	
-	private Datos datos = Parseador.parsear("Archivosdatos/datos30.dat");;
+	private Datos datos = Parseador.parsear("Archivosdatos/datos30.dat");
 	
 	public CromosomaHospitales(double tol)
 	{
@@ -51,24 +51,28 @@ public class CromosomaHospitales extends CromosomaEntero
 		int distancia[][] = datos.getDistancia();
 		int flujo[][] = datos.getFlujo();
 		int n = this.nVar;
-		
-		int a = distancia[n - 1][(int) this.genes[0].fenotipo()];
-		int b = flujo[n - 1][(int) this.genes[0].fenotipo()];
-		suma = suma + (a*b);
-		for (int i = 0; i < n - 1; ++i)
-		{
-			a = (int) this.genes[i].fenotipo();
-			b = (int) this.genes[i].fenotipo();
-			suma += (a*b);
-			
-			a = (int) this.genes[i + 1].fenotipo();
-			b = (int) this.genes[i + 1].fenotipo();
-			suma += (a*b);
-		}
+		int a,b;
+		//int a = distancia[n - 1][(int) this.genes[0].fenotipo()];
+		//int b = flujo[n - 1][(int) this.genes[0].fenotipo()];
+		//suma = suma + (a*b);
+		for (int j = 0; j < n; ++j)
+			for (int i = 0; i < n; ++i)
+			{
 
-		a = distancia[nVar-1][(int) this.genes[n - 1].fenotipo()];
-		b = flujo[nVar-1][(int) this.genes[n - 1].fenotipo()];
-		suma += (a*b);
+				a = (int) this.genes[i].fenotipo();
+				b = (int) this.genes[j].fenotipo();
+				int c = distancia[i][j];
+				int d = flujo[a][b];
+				suma += (c*d);
+				
+				
+				
+				
+			}
+
+		//a = distancia[nVar-1][(int) this.genes[n - 1].fenotipo()];
+		//b = flujo[nVar-1][(int) this.genes[n - 1].fenotipo()];
+		//suma += (a*b);
 		
 		return suma;
 	}

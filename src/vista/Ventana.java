@@ -104,7 +104,6 @@ public class Ventana extends JFrame implements Observador, ActionListener
 		lbN.setVisible(false);
 		
 		cbElitismo = new JCheckBox();
-		cbContractividad = new JCheckBox();
 		
 		run = new JButton("Ejecuta este AG");
 		reRun = new JButton("Volver a ejecutar este mismo AG");
@@ -169,8 +168,6 @@ public class Ventana extends JFrame implements Observador, ActionListener
 		panelParametros.add(cbMutacion);
 		panelParametros.add(new JLabel("Elitismo"));
 		panelParametros.add(cbElitismo);
-		panelParametros.add(new JLabel("Contractividad"));
-		panelParametros.add(cbContractividad);
 		
 		panelAcciones.add(run);
 		panelAcciones.add(reRun);
@@ -352,8 +349,12 @@ public class Ventana extends JFrame implements Observador, ActionListener
 			s += "  x = " + elMejor.getFenotipo()[0] + "\n";
 		}
 		else
-			for(int i=0; i < elMejor.getnVar(); ++i)
-				s += "   x(" + (i + 1) + ") = " + elMejor.getFenotipo()[i] + "\n";
+		{
+			for(int i=0; i < elMejor.getnVar() - 1; ++i)
+				s += "   x(" + (i + 1) + ") = " + elMejor.getFenotipo()[i] + ", ";
+			
+			s += "   x(" + (elMejor.getnVar()) + ") = " + elMejor.getFenotipo()[elMejor.getnVar() - 1] + "\n";
+		}
 		
 		s += "Maximo/Minimo obtenido:\n";
 		s += "   f = " + elMejor.evalua() + "\n";

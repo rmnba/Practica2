@@ -449,66 +449,9 @@ public class AGS
 				++i;
 			}
 		}
-		/*if(bloqueo){
-			Debugger.erxFallido++;
-			hijo1 = padre.copia();
-		}
-		Debugger.erxEjecutado++;*/
 		
 		hijo2 = madre.copia();
 	}
-	
-	/*private void cruceOrdinal(Cromosoma padre, Cromosoma madre, Cromosoma hijo1, Cromosoma hijo2){
-		ArrayList<Integer> dinamica = new ArrayList<Integer>();
-		ArrayList<Integer> dinamicaP = new ArrayList<Integer>();
-		ArrayList<Integer> dinamicaM = new ArrayList<Integer>();
-		ArrayList<Integer> cPadre = new ArrayList<Integer>();
-		ArrayList<Integer> cMadre = new ArrayList<Integer>();
-		ArrayList<Integer> ordenPadre = new ArrayList<Integer>();
-		ArrayList<Integer> ordenMadre = new ArrayList<Integer>();
-		for(int i=0; i < padre.getnVar(); ++i){
-			dinamica.add(i);
-			cPadre.add((int) padre.getGenes()[i].fenotipo());
-			cMadre.add((int) madre.getGenes()[i].fenotipo());
-		}
-		Collections.shuffle(dinamica);
-		for(int i=0; i < padre.getnVar(); ++i){
-			dinamicaP.add(dinamica.get(i));
-			dinamicaM.add(dinamica.get(i));
-			
-		}
-		int posP, posM, eP, eM;
-		for(int i=0; i < padre.getnVar(); ++i){
-			eP = cPadre.get(i);
-			eM = cMadre.get(i);
-			posP = dinamicaP.indexOf(eP);
-			posM = dinamicaM.indexOf(eM);
-			ordenPadre.add(posP);
-			ordenMadre.add(posM);
-			dinamicaP.remove(posP);
-			dinamicaM.remove(posM);
-		}
-		for(int i=0; i < padre.getnVar(); ++i){
-			dinamicaP.add(dinamica.get(i));
-			dinamicaM.add(dinamica.get(i));
-			
-		}
-		ArrayList<Integer> cortes = creaCortes(1, padre.getnVar());
-		for(int i=0; i < cortes.get(0); ++i){
-			hijo1.getGenes()[i].setAlelo(dinamicaP.get(ordenPadre.get(i)));
-			hijo2.getGenes()[i].setAlelo(dinamicaM.get(ordenMadre.get(i)));
-			dinamicaP.remove((int)ordenPadre.get(i));
-			dinamicaM.remove((int)ordenMadre.get(i));
-		}
-		for(int i=cortes.get(0); i < padre.getnVar(); ++i){
-			hijo1.getGenes()[i].setAlelo(dinamicaP.get(ordenMadre.get(i)));
-			hijo2.getGenes()[i].setAlelo(dinamicaM.get(ordenPadre.get(i)));
-			dinamicaP.remove((int)ordenMadre.get(i));
-			dinamicaM.remove((int)ordenPadre.get(i));
-		}
-		hijo1.resuelveFenotipo();
-		hijo2.resuelveFenotipo();
-	}*/
 	
 	private void cruceCX(Cromosoma padre, Cromosoma madre, Cromosoma hijo1, Cromosoma hijo2){
 		for (int i = 0; i < padre.getnVar(); i++) {
@@ -624,7 +567,6 @@ public class AGS
 			reemplazo2[(int) padre.getGenes()[i].fenotipo()] = madre.getGenes()[i].copia();
 		}
 
-		// fill in remaining slots with replacements
 		for (int i = 0; i < padre.getnVar(); i++) {
 			if ((i < cortes.get(0)) || (i > cortes.get(1))) {
 				Gen n1 = padre.getGenes()[i].copia();
@@ -722,7 +664,7 @@ public class AGS
 		}
 	}
 	
-	/*private void mutacion()
+	private void binario()
 	{
 		for(int i=0; i < this.pob.getTam(); ++i)	
 			// Para todos los individuos de la Pob
@@ -730,19 +672,10 @@ public class AGS
 				// Para todos los genes de ese individuo (Cromosoma)
 				pob.getIndividuos()[i].getGenes()[j].mutar(this.probMutacion);
 			
-	}*/
+	}
 	
 	private void mutacion(){
 		switch(metodoMut){
-		/*case BINARIO:
-			for(int i=0; i < this.pob.tam; ++i){		
-				// Para todos los individuos de la Pob
-				for(int j=0; j < pob.individuos[i].getnVar(); ++j){
-					// Para todos los genes de ese individuo (Cromosoma)
-					pob.individuos[i].getGenes()[j].mutar(this.probMutacion);
-				}
-			}
-			break;*/
 		case HEURISTICA:
 			mutacionHeuristica();
 			break;
