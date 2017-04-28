@@ -43,6 +43,7 @@ public class Ventana extends JFrame implements Observador, ActionListener
 	private JComboBox<Cruzar> cbCruce;
 	private JComboBox<String> cbSeleccion;
 	private JComboBox<Mutar> cbMutacion;
+	private JComboBox<String> cbDatos;
 	private JTextField tfTolerancia;
 	private JTextField tfPoblacion;
 	private JTextField tfGeneraciones;
@@ -51,9 +52,10 @@ public class Ventana extends JFrame implements Observador, ActionListener
 	private JTextField tfSemilla;
 	private JLabel lbN;
 	private JLabel labelMutacion;
+	private JLabel lbDatos;
 	private JTextField tfN;
 	private JCheckBox cbElitismo;
-	private JCheckBox cbContractividad;
+	//private JCheckBox cbContractividad;
 	
 	private JButton run;
 	private JButton reRun;
@@ -62,7 +64,8 @@ public class Ventana extends JFrame implements Observador, ActionListener
 	private static Funcion[] funciones = {Funcion.FUNCION1, Funcion.FUNCION2,Funcion.FUNCION3,Funcion.FUNCION4, Funcion.FUNCION4R, Funcion.FUNCION5, Funcion.HOSPITAL};
 	private static Cruzar[] crucesB = {Cruzar.MONOPUNTO, Cruzar.MULTIPUNTO, Cruzar.UNIFORME};
 	private static String[] selecciones = {"RULETA", "TORNEO DETERMINISTA", "TORNEO PROBABILISTA", "ESTOCASTICO"};
-	private static Mutar[] mutaciones = {Mutar.INVERSION, Mutar.INTERCAMBIO, Mutar.INSERCION, Mutar.HEURISTICA};
+	private static Mutar[] mutaciones = {Mutar.BINARIA, Mutar.INVERSION, Mutar.INTERCAMBIO, Mutar.INSERCION, Mutar.HEURISTICA};
+	private static String[] datos = {"ajuste", "datos12", "datos15", "datos30"};
 	
 	private Plot2DPanel plot;
 	private JTextArea taResultados;
@@ -88,6 +91,8 @@ public class Ventana extends JFrame implements Observador, ActionListener
 		cbSeleccion.setSelectedIndex(0);
 		cbMutacion = new JComboBox<Mutar>(mutaciones);
 		cbMutacion.setSelectedIndex(0);
+		cbDatos = new JComboBox<String>(datos);
+		cbMutacion.setSelectedIndex(0);
 		
 		tfTolerancia = new JTextField("0.001", 6);
 		tfPoblacion = new JTextField("100", 6);
@@ -97,11 +102,14 @@ public class Ventana extends JFrame implements Observador, ActionListener
 		tfSemilla = new JTextField("0", 6);
 		tfN = new JTextField("1", 6);
 		lbN = new JLabel("n");
+		lbDatos = new JLabel("Archivo de datos");
 		
 		labelMutacion = new JLabel("Mutacion");
 		
 		tfN.setVisible(false);
 		lbN.setVisible(false);
+		lbDatos.setVisible(false);
+		cbDatos.setVisible(false);
 		
 		cbElitismo = new JCheckBox();
 		
@@ -128,11 +136,11 @@ public class Ventana extends JFrame implements Observador, ActionListener
 		taResultados.setWrapStyleWord(true);
 		JPanel panelFunciones = new JPanel();
 		panelFunciones.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.GRAY), "Funcion"));
-		panelFunciones.setLayout(new GridLayout(2,2));
+		panelFunciones.setLayout(new GridLayout(3,2));
 		
 		JPanel panelParametros = new JPanel();
 		panelParametros.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.GRAY), "Parametros"));
-		panelParametros.setLayout(new GridLayout(9,2));
+		panelParametros.setLayout(new GridLayout(10,2));
 		
 		JPanel panelAcciones = new JPanel();
 		panelAcciones.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.GRAY), "Acciones"));
@@ -147,6 +155,8 @@ public class Ventana extends JFrame implements Observador, ActionListener
 		panelFunciones.add(cbFuncion);
 		panelFunciones.add(lbN);
 		panelFunciones.add(tfN);
+		panelFunciones.add(lbDatos);
+		panelFunciones.add(cbDatos);
 		
 		panelParametros.add(new JLabel("Precision"));
 		panelParametros.add(tfTolerancia);
@@ -171,8 +181,7 @@ public class Ventana extends JFrame implements Observador, ActionListener
 		
 		panelAcciones.add(run);
 		panelAcciones.add(reRun);
-		panelAcciones.add(stop);
-		
+		panelAcciones.add(stop);		
 		
 		JPanel panelControles = new JPanel(new BorderLayout());
 		
@@ -314,12 +323,19 @@ public class Ventana extends JFrame implements Observador, ActionListener
 				lbN.setVisible(true);
 				tfN.setVisible(true);
 			}
-			else if(cbFuncion.getSelectedItem() == Funcion.FUNCION4R || cbFuncion.getSelectedItem() == Funcion.HOSPITAL)
+			else if(cbFuncion.getSelectedItem() == Funcion.FUNCION4R)
 			{
 				lbN.setVisible(true);
 				tfN.setVisible(true);
 				cbCruce.addItem(Cruzar.ARITMETICO);
 				cbCruce.addItem(Cruzar.SBX);
+			}
+			else if(cbFuncion.getSelectedItem() == Funcion.HOSPITAL)
+			{
+				lbN.setVisible(true);
+				tfN.setVisible(true);
+				lbDatos.setVisible(true);
+				cbDatos.setVisible(true);
 			}
 			else
 			{

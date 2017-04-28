@@ -11,7 +11,7 @@ import modelo.genes.factoria.FactoriaGenes;
 public class CromosomaHospitales extends CromosomaEntero
 {
 	
-	private Datos datos = Parseador.parsear("Archivosdatos/datos30.dat");
+	private Datos datos = Parseador.parsear("Archivosdatos/ajuste.dat");
 	
 	public CromosomaHospitales(double tol)
 	{

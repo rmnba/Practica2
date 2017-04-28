@@ -24,6 +24,7 @@ import modelo.cruces.CruceSBX;
 import modelo.cruces.CruceUniforme;
 import modelo.cruces.Cruzar;
 import modelo.mutaciones.Mutacion;
+import modelo.mutaciones.MutacionBinaria;
 import modelo.mutaciones.MutacionHeuristica;
 import modelo.mutaciones.MutacionInsercion;
 import modelo.mutaciones.MutacionIntercambio;
@@ -163,6 +164,9 @@ public class AGS
 		
 		switch(metodoMut)
 		{
+			case BINARIA:
+				mut = new MutacionBinaria (pob, generator, probMutacion);
+				break;
 			case HEURISTICA:
 				mut = new MutacionHeuristica(pob, generator, probMutacion);
 				break;
@@ -299,16 +303,6 @@ public class AGS
 		
 	}
 
-	private void binario()
-	{
-		for(int i=0; i < this.pob.getTam(); ++i)	
-			// Para todos los individuos de la Pob
-			for(int j=0; j < pob.getIndividuos()[i].getnVar(); ++j)
-				// Para todos los genes de ese individuo (Cromosoma)
-				pob.getIndividuos()[i].getGenes()[j].mutar(this.probMutacion);
-			
-	}
-	
 	private void ajustaAptitud()
 	{
 		// Metodo de Escalado
