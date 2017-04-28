@@ -1,5 +1,5 @@
-package modelo;
+package modelo.mutaciones;
 
-public enum Mutacion {
+public enum Mutar {
 	INSERCION, INTERCAMBIO, INVERSION, HEURISTICA
 }

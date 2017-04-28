@@ -1,4 +1,4 @@
-package modelo;
+package modelo.selecciones;
 
 public enum Select 
 {
