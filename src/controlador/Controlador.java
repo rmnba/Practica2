@@ -2,12 +2,14 @@ package controlador;
 
 import modelo.AGS;
 import modelo.Observador;
+import modelo.Parseador;
+import modelo.Cruce;
+import modelo.Datos;
 import modelo.Funcion;
+import modelo.Mutacion;
+import modelo.Select;
 import modelo.cromosomas.Cromosoma;
 import modelo.cromosomas.factoria.FactoriaCromosomas;
-import modelo.cruces.Cruzar;
-import modelo.mutaciones.Mutar;
-import modelo.selecciones.Select;
 
 public class Controlador 
 {
@@ -25,7 +27,7 @@ public class Controlador
 		alg.addObserver(o);
 	}
 	
-	public void setParametersRun(Funcion funcion, int n,  double tol, int pob, int generaciones, double pCruce, double pMutacion, long seed, Cruzar cruce, Select seleccion, Mutar mutacion, boolean elitismo)
+	public void setParametersRun(Funcion funcion, int n,  double tol, int pob, int generaciones, double pCruce, double pMutacion, long seed, Cruce cruce, Select seleccion, Mutacion mutacion, boolean elitismo)
 	{
 		if(seed == 0)
 			lastSeed = System.currentTimeMillis();
@@ -37,7 +39,7 @@ public class Controlador
 		alg = new AGS(pob, this.cromosoma, generaciones, pCruce, pMutacion, seleccion, cruce, elitismo, maximizar, lastSeed, mutacion);
 	}
 	
-	public void setParametersReRun(Funcion funcion, int n,  double tol, int pob, int generaciones, double pCruce, double pMutacion, long seed, Cruzar cruce, Select seleccion, Mutar mutacion, boolean elitismo)
+	public void setParametersReRun(Funcion funcion, int n,  double tol, int pob, int generaciones, double pCruce, double pMutacion, long seed, Cruce cruce, Select seleccion, Mutacion mutacion, boolean elitismo)
 	{
 		if(seed != 0)
 			lastSeed = seed;
@@ -48,7 +50,7 @@ public class Controlador
 	
 	public void lanzaAGS()
 	{
-		alg.ejecuta(this.cromosoma);
+		alg.ejecuta(this.cromosoma, lastSeed);
 	}
 
 	private void generaFuncion(Funcion f, int n, double tol)
@@ -135,9 +137,10 @@ public class Controlador
 			case HOSPITAL:
 				double[] xMaxHosp = new double[n];
 				double[] xMinHosp = new double[n];
+				Datos datos = Parseador.parsear("Archivosdatos/ajuste.dat");
 				for(int i=0; i < n; ++i)
 				{
-					xMaxHosp[i] = n - 1;
+					xMaxHosp[i] = datos.getN()-1;
 					xMinHosp[i] = 0;
 				}
 				FactoriaCromosomas.getInstancia().setxMax(xMaxHosp);

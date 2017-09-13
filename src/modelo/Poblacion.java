@@ -1,6 +1,7 @@
 package modelo;
 
 import modelo.cromosomas.Cromosoma;
+import modelo.cromosomas.factoria.FactoriaCromosomas;
 import modelo.cromosomas.funcion1.CromosomaF1;
 import modelo.cromosomas.funcion2.CromosomaF2;
 import modelo.cromosomas.funcion3.CromosomaF3;
@@ -34,12 +35,17 @@ public class Poblacion
 			this.individuos = new CromosomaHospitales[tam];
 	}
 
-	public void inicializa(Cromosoma cromosoma)
+	public void inicializa(Cromosoma cromosoma, long seed)
 	{
+		this.seed = seed;
+		FactoriaCromosomas f = FactoriaCromosomas.getInstancia();
 		for(int i=0; i < tam; ++i)
 		{
-			individuos[i] = cromosoma;
-			individuos[i].setSeed(this.seed);
+			
+			
+			f.setSeed(this.seed--);
+			individuos[i] = f.creaCromosomaHospitales();
+			
 		}
 		
 	}

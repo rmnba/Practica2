@@ -113,4 +113,10 @@ public class FactoriaCromosomasImp extends FactoriaCromosomas
 		this.nVar = nVar;
 	}
 
+	@Override
+	public void setSeed(long seed) {
+		this.seed = seed;
+		
+	}
+
 }

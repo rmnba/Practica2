@@ -19,15 +19,15 @@ import javax.swing.JTextField;
 
 import org.math.plot.Plot2DPanel;
 
+import modelo.Cruce;
 import modelo.Funcion;
+import modelo.Mutacion;
 import modelo.Observador;
 import modelo.Poblacion;
+import modelo.Select;
 import modelo.cromosomas.Cromosoma;
 import modelo.cromosomas.funcion1.CromosomaF1;
 import modelo.cromosomas.funcion3.CromosomaF3;
-import modelo.cruces.Cruzar;
-import modelo.mutaciones.Mutar;
-import modelo.selecciones.Select;
 import controlador.Controlador;
 
 public class Ventana extends JFrame implements Observador, ActionListener
@@ -40,10 +40,9 @@ public class Ventana extends JFrame implements Observador, ActionListener
 	
 	private Controlador c;
 	private JComboBox<Funcion> cbFuncion; 
-	private JComboBox<Cruzar> cbCruce;
+	private JComboBox<Cruce> cbCruce;
 	private JComboBox<String> cbSeleccion;
-	private JComboBox<Mutar> cbMutacion;
-	private JComboBox<String> cbDatos;
+	private JComboBox<Mutacion> cbMutacion;
 	private JTextField tfTolerancia;
 	private JTextField tfPoblacion;
 	private JTextField tfGeneraciones;
@@ -52,20 +51,18 @@ public class Ventana extends JFrame implements Observador, ActionListener
 	private JTextField tfSemilla;
 	private JLabel lbN;
 	private JLabel labelMutacion;
-	private JLabel lbDatos;
 	private JTextField tfN;
 	private JCheckBox cbElitismo;
-	//private JCheckBox cbContractividad;
+	private JCheckBox cbContractividad;
 	
 	private JButton run;
 	private JButton reRun;
 	private JButton stop;
 	
 	private static Funcion[] funciones = {Funcion.FUNCION1, Funcion.FUNCION2,Funcion.FUNCION3,Funcion.FUNCION4, Funcion.FUNCION4R, Funcion.FUNCION5, Funcion.HOSPITAL};
-	private static Cruzar[] crucesB = {Cruzar.MONOPUNTO, Cruzar.MULTIPUNTO, Cruzar.UNIFORME};
+	private static Cruce[] crucesB = {Cruce.MONOPUNTO, Cruce.MULTIPUNTO, Cruce.UNIFORME};
 	private static String[] selecciones = {"RULETA", "TORNEO DETERMINISTA", "TORNEO PROBABILISTA", "ESTOCASTICO"};
-	private static Mutar[] mutaciones = {Mutar.BINARIA, Mutar.INVERSION, Mutar.INTERCAMBIO, Mutar.INSERCION, Mutar.HEURISTICA};
-	private static String[] datos = {"ajuste", "datos12", "datos15", "datos30"};
+	private static Mutacion[] mutaciones = {Mutacion.INVERSION, Mutacion.INTERCAMBIO, Mutacion.INSERCION, Mutacion.HEURISTICA};
 	
 	private Plot2DPanel plot;
 	private JTextArea taResultados;
@@ -85,13 +82,11 @@ public class Ventana extends JFrame implements Observador, ActionListener
 		cbFuncion = new JComboBox<Funcion>(funciones);
 		cbFuncion.setSelectedIndex(0);
 		cbFuncion.addActionListener(this);
-		cbCruce = new JComboBox<Cruzar>(crucesB);
+		cbCruce = new JComboBox<Cruce>(crucesB);
 		cbCruce.setSelectedIndex(0);
 		cbSeleccion = new JComboBox<String>(selecciones);
 		cbSeleccion.setSelectedIndex(0);
-		cbMutacion = new JComboBox<Mutar>(mutaciones);
-		cbMutacion.setSelectedIndex(0);
-		cbDatos = new JComboBox<String>(datos);
+		cbMutacion = new JComboBox<Mutacion>(mutaciones);
 		cbMutacion.setSelectedIndex(0);
 		
 		tfTolerancia = new JTextField("0.001", 6);
@@ -102,16 +97,14 @@ public class Ventana extends JFrame implements Observador, ActionListener
 		tfSemilla = new JTextField("0", 6);
 		tfN = new JTextField("1", 6);
 		lbN = new JLabel("n");
-		lbDatos = new JLabel("Archivo de datos");
 		
 		labelMutacion = new JLabel("Mutacion");
 		
 		tfN.setVisible(false);
 		lbN.setVisible(false);
-		lbDatos.setVisible(false);
-		cbDatos.setVisible(false);
 		
 		cbElitismo = new JCheckBox();
+		cbContractividad = new JCheckBox();
 		
 		run = new JButton("Ejecuta este AG");
 		reRun = new JButton("Volver a ejecutar este mismo AG");
@@ -136,11 +129,11 @@ public class Ventana extends JFrame implements Observador, ActionListener
 		taResultados.setWrapStyleWord(true);
 		JPanel panelFunciones = new JPanel();
 		panelFunciones.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.GRAY), "Funcion"));
-		panelFunciones.setLayout(new GridLayout(3,2));
+		panelFunciones.setLayout(new GridLayout(2,2));
 		
 		JPanel panelParametros = new JPanel();
 		panelParametros.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.GRAY), "Parametros"));
-		panelParametros.setLayout(new GridLayout(10,2));
+		panelParametros.setLayout(new GridLayout(9,2));
 		
 		JPanel panelAcciones = new JPanel();
 		panelAcciones.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.GRAY), "Acciones"));
@@ -155,8 +148,6 @@ public class Ventana extends JFrame implements Observador, ActionListener
 		panelFunciones.add(cbFuncion);
 		panelFunciones.add(lbN);
 		panelFunciones.add(tfN);
-		panelFunciones.add(lbDatos);
-		panelFunciones.add(cbDatos);
 		
 		panelParametros.add(new JLabel("Precision"));
 		panelParametros.add(tfTolerancia);
@@ -178,10 +169,13 @@ public class Ventana extends JFrame implements Observador, ActionListener
 		panelParametros.add(cbMutacion);
 		panelParametros.add(new JLabel("Elitismo"));
 		panelParametros.add(cbElitismo);
+		panelParametros.add(new JLabel("Contractividad"));
+		panelParametros.add(cbContractividad);
 		
 		panelAcciones.add(run);
 		panelAcciones.add(reRun);
-		panelAcciones.add(stop);		
+		panelAcciones.add(stop);
+		
 		
 		JPanel panelControles = new JPanel(new BorderLayout());
 		
@@ -239,7 +233,7 @@ public class Ventana extends JFrame implements Observador, ActionListener
 		{
 			try
 			{
-				c.setParametersRun((Funcion)cbFuncion.getSelectedItem(), Integer.parseInt(tfN.getText()), Double.parseDouble(tfTolerancia.getText()), Integer.parseInt(tfPoblacion.getText()), Integer.parseInt(tfGeneraciones.getText()), Double.parseDouble(tfprobCruces.getText())/100, Double.parseDouble(tfprobMutacion.getText())/100, Long.parseLong(tfSemilla.getText()), (Cruzar)cbCruce.getSelectedItem(), seleccion, (Mutar) cbMutacion.getSelectedItem(), cbElitismo.isSelected());
+				c.setParametersRun((Funcion)cbFuncion.getSelectedItem(), Integer.parseInt(tfN.getText()), Double.parseDouble(tfTolerancia.getText()), Integer.parseInt(tfPoblacion.getText()), Integer.parseInt(tfGeneraciones.getText()), Double.parseDouble(tfprobCruces.getText())/100, Double.parseDouble(tfprobMutacion.getText())/100, Long.parseLong(tfSemilla.getText()), (Cruce)cbCruce.getSelectedItem(), seleccion, (Mutacion) cbMutacion.getSelectedItem(), cbElitismo.isSelected());
 				taResultados.setForeground(Color.BLACK);
 			}
 			catch(NumberFormatException ex)
@@ -277,7 +271,7 @@ public class Ventana extends JFrame implements Observador, ActionListener
 		{
 			try
 			{
-				c.setParametersReRun((Funcion)cbFuncion.getSelectedItem(), Integer.parseInt(tfN.getText()), Double.parseDouble(tfTolerancia.getText()), Integer.parseInt(tfPoblacion.getText()), Integer.parseInt(tfGeneraciones.getText()), Double.parseDouble(tfprobCruces.getText())/100, Double.parseDouble(tfprobMutacion.getText())/100, Long.parseLong(tfSemilla.getText()), (Cruzar)cbCruce.getSelectedItem(), seleccion, (Mutar) cbMutacion.getSelectedItem(), cbElitismo.isSelected());
+				c.setParametersReRun((Funcion)cbFuncion.getSelectedItem(), Integer.parseInt(tfN.getText()), Double.parseDouble(tfTolerancia.getText()), Integer.parseInt(tfPoblacion.getText()), Integer.parseInt(tfGeneraciones.getText()), Double.parseDouble(tfprobCruces.getText())/100, Double.parseDouble(tfprobMutacion.getText())/100, Long.parseLong(tfSemilla.getText()), (Cruce)cbCruce.getSelectedItem(), seleccion, (Mutacion) cbMutacion.getSelectedItem(), cbElitismo.isSelected());
 				taResultados.setForeground(Color.BLACK);
 			}
 			catch(NumberFormatException ex)
@@ -323,19 +317,12 @@ public class Ventana extends JFrame implements Observador, ActionListener
 				lbN.setVisible(true);
 				tfN.setVisible(true);
 			}
-			else if(cbFuncion.getSelectedItem() == Funcion.FUNCION4R)
+			else if(cbFuncion.getSelectedItem() == Funcion.FUNCION4R || cbFuncion.getSelectedItem() == Funcion.HOSPITAL)
 			{
 				lbN.setVisible(true);
 				tfN.setVisible(true);
-				cbCruce.addItem(Cruzar.ARITMETICO);
-				cbCruce.addItem(Cruzar.SBX);
-			}
-			else if(cbFuncion.getSelectedItem() == Funcion.HOSPITAL)
-			{
-				lbN.setVisible(true);
-				tfN.setVisible(true);
-				lbDatos.setVisible(true);
-				cbDatos.setVisible(true);
+				cbCruce.addItem(Cruce.ARITMETICO);
+				cbCruce.addItem(Cruce.SBX);
 			}
 			else
 			{
@@ -343,8 +330,8 @@ public class Ventana extends JFrame implements Observador, ActionListener
 				tfN.setVisible(false);
 				if(cbCruce.getItemCount() > 3)
 				{
-					cbCruce.removeItem(Cruzar.ARITMETICO);
-					cbCruce.removeItem(Cruzar.SBX);
+					cbCruce.removeItem(Cruce.ARITMETICO);
+					cbCruce.removeItem(Cruce.SBX);
 				}
 			}
 		}
@@ -365,12 +352,8 @@ public class Ventana extends JFrame implements Observador, ActionListener
 			s += "  x = " + elMejor.getFenotipo()[0] + "\n";
 		}
 		else
-		{
-			for(int i=0; i < elMejor.getnVar() - 1; ++i)
+			for(int i=0; i < elMejor.getnVar(); ++i)
 				s += "   x(" + (i + 1) + ") = " + elMejor.getFenotipo()[i] + ", ";
-			
-			s += "   x(" + (elMejor.getnVar()) + ") = " + elMejor.getFenotipo()[elMejor.getnVar() - 1] + "\n";
-		}
 		
 		s += "Maximo/Minimo obtenido:\n";
 		s += "   f = " + elMejor.evalua() + "\n";
